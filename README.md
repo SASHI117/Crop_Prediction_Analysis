@@ -214,12 +214,20 @@ xgboost==2.0.3
 shap==0.43.0
 scikit-learn==1.3.2
 matplotlib
-🧑‍💻 Author
+
+---
+
+## 🧑‍💻 Author
 
 👋 Sashi Vardhan Pragada
 Passionate about Artificial Intelligence, Machine Learning, and building explainable, data-driven solutions for real-world problems.
-📜 License
+
+---
+
+## 📜 License
 
 Distributed under the MIT License — free to use, modify, and share with attribution.
 
-⭐ If you found this project useful, consider giving it a star on GitHub! ⭐
+---
+
+## ⭐ If you found this project useful, consider giving it a star on GitHub! ⭐

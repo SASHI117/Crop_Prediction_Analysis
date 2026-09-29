@@ -17,26 +17,6 @@ from crop_analysis import features, recommend, yield_model  # noqa: E402
 INK, MUTED, SURFACE = "#0b0b0b", "#898781", "#fcfcfb"
 TRUTH, SHAP_C = "#2a78d6", "#eb6834"   # categorical slots 1 and 2
 
-# Which model features belong to which term of the known formula. Nutrient
-# features are collinear (Total = N + P + K, Avg = Total / 3), so SHAP
-# spreads the NPK credit across all five; summing them makes it comparable.
-GROUPS = {
-    "NPK (0.5 × NPK_Avg)": ["Nitrogen", "Phosphorous", "Potassium", "NPK_Avg", "Total_Nutrients"],
-    "Humidity (0.2 ×)": ["Humidity"],
-    "Rainfall (0.1 ×)": ["Rainfall"],
-    "Temperature (5 × temp_factor)": ["Temperature"],
-}
-
-
-def grouped_shap(importance: pd.Series) -> pd.Series:
-    grouped = {g: float(importance.reindex(cols).fillna(0).sum()) for g, cols in GROUPS.items()}
-    used = {c for cols in GROUPS.values() for c in cols}
-    grouped["Temp × Humidity index"] = float(importance.get("Temp_Humidity_Index", 0.0))
-    grouped["pH + crop type (not in formula)"] = float(
-        importance.drop(labels=[*used, "Temp_Humidity_Index"], errors="ignore").sum())
-    return pd.Series(grouped)
-
-
 def plot_shap_vs_truth(truth: pd.Series, shap_grouped: pd.Series, path: Path) -> None:
     order = list(shap_grouped.sort_values().index)
     y = range(len(order))
@@ -91,7 +71,7 @@ def main() -> None:
 
     importance, explanation = yield_model.shap_importance(y["model"], y["X_test"])
     truth = yield_model.ground_truth_spread(df)
-    shap_grouped = grouped_shap(importance)
+    shap_grouped = yield_model.grouped_shap(importance)
     plot_shap_vs_truth(truth, shap_grouped, args.out / "shap_vs_formula.png")
 
     import shap

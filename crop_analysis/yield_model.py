@@ -101,3 +101,23 @@ def ground_truth_spread(df: pd.DataFrame) -> pd.Series:
     return pd.Series({k: float((v - v.mean()).abs().mean()) for k, v in terms.items()}).sort_values(
         ascending=False
     )
+
+
+# Which model features belong to which term of the known formula. Nutrient
+# features are collinear (Total = N + P + K, Avg = Total / 3), so SHAP
+# spreads the NPK credit across all five; summing them makes it comparable.
+SHAP_GROUPS = {
+    "NPK (0.5 × NPK_Avg)": ["Nitrogen", "Phosphorous", "Potassium", "NPK_Avg", "Total_Nutrients"],
+    "Humidity (0.2 ×)": ["Humidity"],
+    "Rainfall (0.1 ×)": ["Rainfall"],
+    "Temperature (5 × temp_factor)": ["Temperature"],
+}
+
+
+def grouped_shap(importance: pd.Series) -> pd.Series:
+    grouped = {g: float(importance.reindex(cols).fillna(0).sum()) for g, cols in SHAP_GROUPS.items()}
+    used = {c for cols in SHAP_GROUPS.values() for c in cols}
+    grouped["Temp × Humidity index"] = float(importance.get("Temp_Humidity_Index", 0.0))
+    grouped["pH + crop type (not in formula)"] = float(
+        importance.drop(labels=[*used, "Temp_Humidity_Index"], errors="ignore").sum())
+    return pd.Series(grouped)

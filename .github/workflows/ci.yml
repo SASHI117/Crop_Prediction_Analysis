@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements-dev.txt
+      - run: ruff check .
+      - run: pytest -q
+      - name: End-to-end pipeline
+        run: python run_pipeline.py --out /tmp/reports && test -s /tmp/reports/metrics.json
+      - name: Notebook executes top to bottom
+        run: jupyter execute crop_prediction.ipynb || python -c "import nbformat,nbclient;nb=nbformat.read('crop_prediction.ipynb',4);nbclient.NotebookClient(nb,timeout=600).execute()"

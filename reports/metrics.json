@@ -1,0 +1,134 @@
+{
+  "recommendation": [
+    {
+      "model": "random_forest",
+      "cv_accuracy": 0.9932,
+      "cv_accuracy_std": 0.0046,
+      "cv_macro_f1": 0.9932,
+      "test_accuracy": 0.9932,
+      "test_macro_f1": 0.9932
+    },
+    {
+      "model": "xgboost",
+      "cv_accuracy": 0.9898,
+      "cv_accuracy_std": 0.0023,
+      "cv_macro_f1": 0.9898,
+      "test_accuracy": 0.9886,
+      "test_macro_f1": 0.9885
+    },
+    {
+      "model": "logistic_regression",
+      "cv_accuracy": 0.9682,
+      "cv_accuracy_std": 0.0066,
+      "cv_macro_f1": 0.9678,
+      "test_accuracy": 0.9727,
+      "test_macro_f1": 0.9725
+    }
+  ],
+  "recommendation_example": {
+    "input": {
+      "Nitrogen": 90,
+      "Phosphorous": 42,
+      "Potassium": 43,
+      "Temperature": 21.0,
+      "Humidity": 82.0,
+      "pH": 6.5,
+      "Rainfall": 203.0
+    },
+    "top3": [
+      [
+        "rice",
+        0.95
+      ],
+      [
+        "jute",
+        0.04666666666666667
+      ],
+      [
+        "papaya",
+        0.0033333333333333335
+      ]
+    ],
+    "model": "random_forest"
+  },
+  "yield": {
+    "best_params": {
+      "learning_rate": 0.1,
+      "max_depth": 3,
+      "n_estimators": 400
+    },
+    "cv_r2": 0.9976,
+    "test": {
+      "xgboost": {
+        "r2": 0.9978,
+        "rmse": 0.7262,
+        "mae": 0.551
+      },
+      "linear_baseline": {
+        "r2": 0.9992,
+        "rmse": 0.4317,
+        "mae": 0.3105
+      }
+    }
+  },
+  "shap_mean_abs": {
+    "NPK_Avg": 8.763099670410156,
+    "Rainfall": 3.6689000129699707,
+    "Humidity": 2.4195001125335693,
+    "Nitrogen": 1.1963000297546387,
+    "Temp_Humidity_Index": 0.6266999840736389,
+    "Potassium": 0.5016999840736389,
+    "Phosphorous": 0.41440001130104065,
+    "Temperature": 0.2533999979496002,
+    "Crop_Type_pigeonpeas": 0.13500000536441803,
+    "Crop_Type_papaya": 0.05889999866485596,
+    "Crop_Type_kidneybeans": 0.04639999940991402,
+    "Crop_Type_mango": 0.027699999511241913,
+    "Crop_Type_mothbeans": 0.021700000390410423,
+    "pH": 0.021299999207258224,
+    "Crop_Type_banana": 0.01860000006854534,
+    "Crop_Type_apple": 0.018400000408291817,
+    "Crop_Type_watermelon": 0.015399999916553497,
+    "Crop_Type_pomegranate": 0.014299999922513962,
+    "Crop_Type_maize": 0.013399999588727951,
+    "Crop_Type_blackgram": 0.011900000274181366,
+    "Crop_Type_coffee": 0.01080000028014183,
+    "Crop_Type_cotton": 0.009700000286102295,
+    "Crop_Type_chickpea": 0.007199999876320362,
+    "Crop_Type_rice": 0.004699999932199717,
+    "Crop_Type_jute": 0.004399999976158142,
+    "Crop_Type_lentil": 0.004000000189989805,
+    "Crop_Type_orange": 0.0035000001080334187,
+    "Crop_Type_coconut": 0.0017000000225380063,
+    "Crop_Type_muskmelon": 0.000699999975040555,
+    "Crop_Type_mungbean": 0.000699999975040555,
+    "Total_Nutrients": 0.0,
+    "Crop_Type_grapes": 0.0
+  },
+  "shap_grouped_vs_formula": {
+    "NPK (0.5 \u00d7 NPK_Avg)": {
+      "shap": 10.8755,
+      "formula": 9.7152
+    },
+    "Humidity (0.2 \u00d7)": {
+      "shap": 2.4195,
+      "formula": 3.6346
+    },
+    "Rainfall (0.1 \u00d7)": {
+      "shap": 3.6689,
+      "formula": 4.2438
+    },
+    "Temperature (5 \u00d7 temp_factor)": {
+      "shap": 0.2534,
+      "formula": 0.4756
+    },
+    "Temp \u00d7 Humidity index": {
+      "shap": 0.6267,
+      "formula": 0.0
+    },
+    "pH + crop type (not in formula)": {
+      "shap": 0.4504,
+      "formula": 0.0
+    }
+  }
+}

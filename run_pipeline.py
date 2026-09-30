@@ -33,7 +33,7 @@ def plot_shap_vs_truth(truth: pd.Series, shap_grouped: pd.Series, path: Path) ->
         ax.text(b + 0.15, i - h / 2 - 0.02, f"{b:.2f}", va="center", fontsize=8, color=INK)
     ax.set_yticks(list(y), order, fontsize=9, color=INK)
     ax.set_xlabel("mean absolute contribution to predicted yield (yield units)", fontsize=9, color=MUTED)
-    ax.set_title("Does SHAP recover the formula the target was built from?", loc="left",
+    ax.set_title("SHAP attributions vs. the known formula terms", loc="left",
                  fontsize=11, color=INK)
     ax.tick_params(colors=MUTED, length=0)
     ax.grid(axis="x", color="#e6e5e0", linewidth=0.8)

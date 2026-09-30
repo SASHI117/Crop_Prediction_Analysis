@@ -2,7 +2,6 @@
 import numpy as np
 import pandas as pd
 from sklearn.compose import ColumnTransformer
-from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.model_selection import GridSearchCV, KFold, train_test_split
 from sklearn.pipeline import Pipeline
@@ -40,8 +39,7 @@ def _metrics(y_true, y_pred) -> dict:
 
 
 def train(df: pd.DataFrame, seed: int = 42) -> dict:
-    """Tune XGBoost with CV on the training split; report held-out metrics
-    for XGBoost and a linear baseline."""
+    """Tune XGBoost with 5-fold CV on the training split; report held-out metrics."""
     X = df[NUMERIC + CATEGORICAL]
     y = synthetic_yield(df)
     X_train, X_test, y_train, y_test = train_test_split(
@@ -53,19 +51,11 @@ def train(df: pd.DataFrame, seed: int = 42) -> dict:
                           scoring="r2", n_jobs=-1)
     search.fit(X_train, y_train)
 
-    # The target is linear except for the temperature term, so a linear model
-    # is the honest baseline: it shows how much of XGBoost's score is simply
-    # recovering a known formula.
-    linear = Pipeline([("prep", _preprocessor()), ("model", LinearRegression())]).fit(X_train, y_train)
-
     return {
         "model": search.best_estimator_,
         "best_params": {k.removeprefix("model__"): v for k, v in search.best_params_.items()},
         "cv_r2": round(float(search.best_score_), 4),
-        "test": {
-            "xgboost": _metrics(y_test, search.predict(X_test)),
-            "linear_baseline": _metrics(y_test, linear.predict(X_test)),
-        },
+        "test": _metrics(y_test, search.predict(X_test)),
         "X_train": X_train,
         "X_test": X_test,
     }
